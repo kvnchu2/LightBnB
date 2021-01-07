@@ -19,10 +19,9 @@ const pool = new Pool({
 const getUserWithEmail = function(email) {
   return pool.query(`
   SELECT * FROM users
-  WHERE email = $1
+  WHERE email = $1;
   `, [email])
   .then(res => {
-    console.log('insidethen')
     return res.rows
   })
   .catch(err => {
@@ -39,11 +38,10 @@ exports.getUserWithEmail = getUserWithEmail;
 const getUserWithId = function(id) {
   return pool.query(`
   SELECT * FROM users
-  WHERE users.id = $1
+  WHERE users.id = $1;
   `, [id])
   .then(res => {
-    console.log('insidethen')
-    return res.rows
+    return res.rows[0];
   })
   .catch(err => {
     console.log('insidecatch')
@@ -58,13 +56,14 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser =  function(user) {
+  console.log('adduser');
+  console.log(user.name, user.email, user.password);
   return pool.query(`
-  INSERT INTO users 
-  VALUES ($1, $2, $3)
+  INSERT INTO users (name, email, password)
+  VALUES ($1, $2, $3) returning *;
   `, [user.name, user.email, user.password])
   .then(res => {
-    console.log('insidethen')
-    return res.rows
+    return res.rows[0]; 
   })
   .catch(err => {
     console.log('insidecatch')
@@ -95,7 +94,7 @@ exports.getAllReservations = getAllReservations;
 const getAllProperties = function(options, limit = 10) {
     return pool.query(`
     SELECT * FROM properties
-    LIMIT $1
+    LIMIT $1;
     `, [limit])
     .then(res => res.rows);
 }
